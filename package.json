@@ -1,0 +1,34 @@
+{
+  "name": "kierros-3",
+  "version": "1.0.0",
+  "description": "puhelinluettelon backend",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "watch": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/viljamivirolainen/fullstack3.git"
+  },
+  "keywords": [
+    "nodejs",
+    "express",
+    "json",
+    "api",
+    "rest"
+  ],
+  "author": "Viljami Virolainen",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/viljamivirolainen/fullstack3/issues"
+  },
+  "homepage": "https://github.com/viljamivirolainen/fullstack3#readme",
+  "dependencies": {
+    "express": "^4.16.3"
+  },
+  "devDependencies": {
+    "nodemon": "^1.17.3"
+  }
+}
