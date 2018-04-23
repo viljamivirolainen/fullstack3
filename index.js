@@ -3,6 +3,8 @@ const app = express()
 const bodyParser = require('body-parser')
 const morgan = require('morgan')
 app.use(bodyParser.json())
+const cors = require('cors')
+app.use(cors())
 morgan.token('content', function (req, res) { 
   const body = req.body || {}
   return JSON.stringify(body) 
