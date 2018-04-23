@@ -5,3 +5,12 @@ GET http://localhost:3001/info
 GET http://localhost:3001/api/persons/10
 
 GET http://localhost:3001/api/persons/1
+
+POST http://localhost:3001/api/persons/
+Content-Type: application/json
+
+{
+    "name": "Kata",
+    "number": "0401587737",
+    "id": 278436596
+}
