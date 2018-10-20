@@ -13,3 +13,5 @@ Content-Type: application/json
     "name": "Kata",
     "number": "0401587737"
 }
+
+GET https://puhelinluettelo-online.herokuapp.com/api/persons
