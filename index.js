@@ -12,9 +12,12 @@ morgan.token('content', function (req, res) {
 })
 app.use(morgan(':method :url :content :status :res[content-length] - :response-time ms'
 ))
+const Person = require('./models/person')
+const config = require('./config')
+const url = 'mongodb://fullstack:'+config.password+'@ds155299.mlab.com:55299/puhelinluettelo'
 
 
-let persons = [
+/* let persons = [
       {
         "name": "ff",
         "number": "df",
@@ -35,7 +38,7 @@ let persons = [
         "number": "432",
         "id": 10
       }
-    ]
+    ] */
 
 
 
@@ -44,56 +47,55 @@ app.get('/', (req, res) => {
 })
 
 app.get('/api/persons', (req, res) => {
-  res.json(persons)
+  Person
+    .find({})
+    .then(persons => {
+      res.json(persons.map(person=>Person.format(person)))
+    })
 })
 
 app.get('/api/persons/:id', (req, res) => {
   const id = Number(req.params.id)
   console.log(id)
-  const person = persons.find(person => person.id === id)
-  if(person) {
-    res.json(person)
-  } else {
-    res.status(404).end()
-  }
+  Person.findById(id)
+    .then(person => {
+      if(person) {
+        res.json(Person.format(person))
+      } else {
+        res.status(404).end()
+      }
+    })  
 })
 
 app.get('/info', (req, res) => {
-  const sum = persons.length
-  const date = new Date() 
-  res.send('<p>puhelinluettelossa ' + sum + ' ihmisen tiedot<p><p>'+ date +'</p>')
+  Person
+    .find({})
+    .then(persons => {
+      const sum = persons.length
+      const date = new Date() 
+      res.send('<p>puhelinluettelossa ' + sum + ' ihmisen tiedot<p><p>'+ date +'</p>')
+    })
 })
 
 app.delete('/api/persons/:id', (req, res) => {
   const id = Number(req.params.id)
-  persons = persons.filter(person => person.id !== id)
+  Person.findByIdAndDelete(id)
   res.status(204).end()
 })
 
 app.post('/api/persons/', (req, res) => {
-  const person = req.body
-  const name = person.name
-  const number = person.number
-  if(!person) {
-    res.status(400).json({error: 'no person data received'})
-  }
-  if(!name) {
-    res.status(400).json({error: 'name missing'})
-  }
-  if(!number) {
-    res.status(400).json({error: 'number missing'})
-  }
-
-  if(persons.map(person=>person.name).includes(name)) {
-    res.status(400).json({error: 'name must be unique'})
-  }
-
-
-
-  const id = Math.floor(Math.random()*Math.floor(1000000000))
-  const personWithId = {name:name, number:number,id:id}
-  persons.push(personWithId)
-  res.json(personWithId)
+  const person = new Person({
+    name: req.body.name,
+    number: req.body.number
+  })
+  person.save()
+    .then(person => {
+      console.log('lisätään henkilö ' + person.name + ' numero ' + person.number + ' luetteloon')
+      res.json(Person.format(person))
+    })
+  /* const id = Math.floor(Math.random()*Math.floor(1000000000)) */
+  /* const personWithId = {name:name, number:number}
+  persons.push(personWithId) */
 })
 
 const PORT = process.env.PORT || 3001
