@@ -49,20 +49,21 @@ app.get('/', (req, res) => {
 app.get('/api/persons', (req, res) => {
   Person
     .find({})
+    .catch(error=>console.log(error))
     .then(persons => {
       res.json(persons.map(person=>Person.format(person)))
     })
+    .catch(error=>console.log(error))
 })
 
 app.get('/api/persons/:id', (req, res) => {
-  const id = Number(req.params.id)
-  console.log(id)
-  Person.findById(id)
+  Person
+    .findById(req.params.id)
     .then(person => {
       if(person) {
         res.json(Person.format(person))
       } else {
-        res.status(404).end()
+        res.status(404).send({message:'person not found'})
       }
     })  
 })
@@ -70,29 +71,57 @@ app.get('/api/persons/:id', (req, res) => {
 app.get('/info', (req, res) => {
   Person
     .find({})
+    .catch(error=>console.log(error))
     .then(persons => {
       const sum = persons.length
       const date = new Date() 
       res.send('<p>puhelinluettelossa ' + sum + ' ihmisen tiedot<p><p>'+ date +'</p>')
     })
+    .catch(error=>console.log(error))
 })
 
 app.delete('/api/persons/:id', (req, res) => {
-  const id = Number(req.params.id)
+  const id = req.params.id
   Person.findByIdAndDelete(id)
-  res.status(204).end()
+    .then(response => {
+      res.status(204).end()
+    })
 })
 
 app.post('/api/persons/', (req, res) => {
-  const person = new Person({
-    name: req.body.name,
-    number: req.body.number
-  })
-  person.save()
+  Person.find({name:req.body.name})
+    .then(response => {
+      if(response) {
+        res.status(405).send({message:'Person is already in list. You should use PUT to update.'})
+      } else {
+        const person = new Person({
+          name: req.body.name,
+          number: req.body.number
+        })
+        person.save()
+          .catch(error=>console.log(error))
+          .then(person => {
+            console.log('lisätään henkilö ' + person.name + ' numero ' + person.number + ' luetteloon')
+            res.json(Person.format(person))
+          })
+          .catch(error=>console.log(error))
+      }
+      /* const id = Math.floor(Math.random()*Math.floor(1000000000)) */
+      /* const personWithId = {name:name, number:number}
+      persons.push(personWithId) */
+    })
+    })
+  
+
+app.put('/api/persons/:id', (req, res) => {
+  const id = req.params.id
+  Person.findByIdAndUpdate(id)
+    .catch(error=>console.log(error))
     .then(person => {
-      console.log('lisätään henkilö ' + person.name + ' numero ' + person.number + ' luetteloon')
+      console.log('muutetaan henkilölle ' + person.name + ' numero ' + person.number + ' luetteloon')
       res.json(Person.format(person))
     })
+    .catch(error=>console.log(error))
   /* const id = Math.floor(Math.random()*Math.floor(1000000000)) */
   /* const personWithId = {name:name, number:number}
   persons.push(personWithId) */

@@ -23,6 +23,13 @@ const showPersons = () =>  {
   })
 }
 
+const deletePerson = (id) => {
+  Person.findByIdAndDelete(id)
+  .then(response => {
+    console.log(response)
+    mongoose.connection.close()
+  })  
+}
 const savePerson = (name, number) => {
   
   const person = new Person({
@@ -36,10 +43,22 @@ const savePerson = (name, number) => {
     mongoose.connection.close()
   })
 }
-
+const findPersonById = (id) => {
+  Person
+  .findById(id)
+  .then(person => {
+    if(person) {
+      console.log(person)
+    } else {
+      console.log('somethings fucked now')
+    }
+  }) 
+}
 
 switch(process.argv.length){
   case 2: showPersons()
+    break;
+  case 3: findPersonById(process.argv[2])
     break;
   case 4: savePerson(process.argv[2],process.argv[3])
     break;
