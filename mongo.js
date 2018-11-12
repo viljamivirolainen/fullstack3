@@ -1,8 +1,7 @@
 const mongoose = require('mongoose')
-const config = require('./config')
 // korvaa url oman tietokantasi urlilla. ethän laita salasanaa Githubiin!
-const url = 'mongodb://fullstack:'+config.password+'@ds155299.mlab.com:55299/puhelinluettelo'
-
+require('dotenv').config()
+const url = process.env.MONGODB_URI
 mongoose.connect(url)
 
 
@@ -31,7 +30,6 @@ const deletePerson = (id) => {
   })  
 }
 const savePerson = (name, number) => {
-  
   const person = new Person({
     name: name,
     number: number

@@ -1,1 +1,0 @@
-module.exports.password = 'apinakapina123';

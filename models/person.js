@@ -1,7 +1,8 @@
 const mongoose = require('mongoose')
-const config = require('.././config')
-const url = 'mongodb://fullstack:'+config.password+'@ds155299.mlab.com:55299/puhelinluettelo'
-
+if ( process.env.NODE_ENV !== 'production' ) {
+  require('dotenv').config()
+}
+const url = process.env.MONGODB_URI
 mongoose.connect(url)
 const personSchema = new mongoose.Schema({
   name: String,

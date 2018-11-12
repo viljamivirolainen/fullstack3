@@ -13,34 +13,6 @@ morgan.token('content', function (req, res) {
 app.use(morgan(':method :url :content :status :res[content-length] - :response-time ms'
 ))
 const Person = require('./models/person')
-const config = require('./config')
-const url = 'mongodb://fullstack:'+config.password+'@ds155299.mlab.com:55299/puhelinluettelo'
-
-
-/* let persons = [
-      {
-        "name": "ff",
-        "number": "df",
-        "id": 6
-      },
-      {
-        "name": "VIljami",
-        "number": "12312",
-        "id": 8
-      },
-      {
-        "name": "afff",
-        "number": "324",
-        "id": 9
-      },
-      {
-        "name": "minä",
-        "number": "432",
-        "id": 10
-      }
-    ] */
-
-
 
 app.get('/', (req, res) => {
   res.send('<h1>Hello World!</h1>')
@@ -89,27 +61,24 @@ app.delete('/api/persons/:id', (req, res) => {
 })
 
 app.post('/api/persons/', (req, res) => {
-  Person.find({name:req.body.name})
+  const person = new Person({
+    name: req.body.name,
+    number: req.body.number
+  })
+  Person.findOne({name:req.body.name})
     .then(response => {
       if(response) {
         res.status(405).send({message:'Person is already in list. You should use PUT to update.'})
       } else {
-        const person = new Person({
-          name: req.body.name,
-          number: req.body.number
-        })
+        
         person.save()
-          .catch(error=>console.log(error))
           .then(person => {
             console.log('lisätään henkilö ' + person.name + ' numero ' + person.number + ' luetteloon')
             res.json(Person.format(person))
           })
-          .catch(error=>console.log(error))
       }
-      /* const id = Math.floor(Math.random()*Math.floor(1000000000)) */
-      /* const personWithId = {name:name, number:number}
-      persons.push(personWithId) */
     })
+
     })
   
 
@@ -122,9 +91,6 @@ app.put('/api/persons/:id', (req, res) => {
       res.json(Person.format(person))
     })
     .catch(error=>console.log(error))
-  /* const id = Math.floor(Math.random()*Math.floor(1000000000)) */
-  /* const personWithId = {name:name, number:number}
-  persons.push(personWithId) */
 })
 
 const PORT = process.env.PORT || 3001
