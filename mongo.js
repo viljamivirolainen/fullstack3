@@ -1,6 +1,5 @@
 const mongoose = require('mongoose')
 // korvaa url oman tietokantasi urlilla. ethän laita salasanaa Githubiin!
-require('dotenv').config()
 const url = process.env.MONGODB_URI
 mongoose.connect(url)
 
@@ -30,6 +29,7 @@ const deletePerson = (id) => {
   })  
 }
 const savePerson = (name, number) => {
+  
   const person = new Person({
     name: name,
     number: number
